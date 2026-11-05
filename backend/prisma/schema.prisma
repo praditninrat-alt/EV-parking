@@ -1,0 +1,36 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model OrganizationBooking {
+  id           String   @id
+  reference    String   @unique
+  userId       String
+  employeeCode String
+  startAt      DateTime
+  endAt        DateTime
+  status       String   @default("CONFIRMED")
+  createdAt    DateTime @default(now())
+
+  @@index([status, startAt, endAt])
+  @@index([userId, startAt])
+}
+
+model OrganizationBookingMutex {
+  id      String @id
+  version Int    @default(0)
+}
+
+model OrganizationSession {
+  id        String   @id
+  userId    String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([expiresAt])
+}
